@@ -1,0 +1,10 @@
+development:
+  host: 'residential-service.dev'
+  service: 'residential-service'
+  password: 'password'
+  key: 'key'
+test:
+  host: 'residential-service.dev'
+  service: 'residential-service'
+  password: 'password'
+  key: 'key'
