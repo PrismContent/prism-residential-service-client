@@ -49,6 +49,11 @@ module ResidentialService
         end
       end
 
+      def destroy(meal_type)
+        response = Typhoeus::Request.delete instance_url(meal_type)
+        response.code == 200
+      end
+
       def persistence_method( meal_type )
         meal_type.new_record? ? :post : :put
       end

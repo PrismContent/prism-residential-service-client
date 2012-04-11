@@ -38,6 +38,10 @@ module ResidentialService
       ResidentialService::MealTypePersistence.save self
     end
 
+    def destroy
+      ResidentialService::MealTypePersistence.destroy self
+    end
+
     def attributes
       @@attributes.inject(ActiveSupport::HashWithIndifferentAccess.new) do |attrs, key|
         attrs.merge key => read_attribute_for_validation(key)

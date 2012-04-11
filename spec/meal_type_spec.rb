@@ -150,4 +150,34 @@ describe ResidentialService::MealType do
       it{ should eql false }
     end
   end
+
+  describe '#destroy' do
+    context 'with a new record' do
+      before :each do
+        @meal_type = ResidentialService::MealType.new @valid_attributes
+        @meal_type.should be_new_record
+      end
+
+      it "should be false" do
+        @meal_type.destroy.should eql false
+      end
+    end
+
+    context 'with a persisted record' do
+      before :each do
+        @meal_type = ResidentialService::MealType.create @valid_attributes
+        @meal_type.should_not be_new_record
+      end
+
+      it "should be true" do
+        @meal_type.destroy.should eql true
+      end
+
+      it "should remove the MealType" do
+        @meal_type.destroy
+
+        ResidentialService::MealType.find(@meal_type.account_id, @meal_type.id).should be_nil
+      end
+    end
+  end
 end
