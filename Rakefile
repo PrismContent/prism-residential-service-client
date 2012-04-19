@@ -15,10 +15,11 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "prism-residential-service-client"
+  gem.version = File.read('VERSION').chomp
   gem.homepage = "http://github.com/andy.vanasse@prismcontent.com/prism-residential-service-client"
   gem.license = "MIT"
   gem.summary = %Q{Client for the Prism Residential Service}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.description = %Q{An ActiveRecord-like interface for accessing the Resident Services API.}
   gem.email = "andyvanasse@gmail.com"
   gem.authors = ["Andy Vanasse"]
   # dependencies defined in Gemfile
