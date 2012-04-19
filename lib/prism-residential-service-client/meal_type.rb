@@ -1,6 +1,5 @@
 module ResidentialService
   require 'active_model'
-  require 'active_support/hash_with_indifferent_access'
 
   class MealType
     require File.expand_path(File.dirname(__FILE__), 'meal_type_persistence')
@@ -43,7 +42,7 @@ module ResidentialService
     end
 
     def attributes
-      @@attributes.inject(ActiveSupport::HashWithIndifferentAccess.new) do |attrs, key|
+      @@attributes.inject(ResidentialService::HashWithIndifferentAccess.new) do |attrs, key|
         attrs.merge key => read_attribute_for_validation(key)
       end
     end

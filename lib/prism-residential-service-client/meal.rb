@@ -1,7 +1,5 @@
 module ResidentialService
   require 'active_model'
-  require 'active_support/hash_with_indifferent_access'
-  require 'active_support/time_with_zone'
 
   class Meal
     require File.expand_path(File.dirname(__FILE__), 'meal_type_course_persistence')
@@ -30,7 +28,7 @@ module ResidentialService
 
     def initialize(meal_attr={})
       meal_attr ||= {}
-      meal_attr = ActiveSupport::HashWithIndifferentAccess.new(meal_attr)
+      meal_attr = ResidentialService::HashWithIndifferentAccess.new(meal_attr)
 
       meal_attr.merge!(starting_at: Time.parse(meal_attr[:starting_at])) if meal_attr[:starting_at].is_a?(String)
       meal_attr.merge!(ending_at: Time.parse(meal_attr[:ending_at])) if meal_attr[:ending_at].is_a?(String)
@@ -62,7 +60,7 @@ module ResidentialService
     end
 
     def attributes
-      @@attributes.inject(ActiveSupport::HashWithIndifferentAccess.new) do |attrs, key|
+      @@attributes.inject(ResidentialService::HashWithIndifferentAccess.new) do |attrs, key|
         attrs.merge key => read_attribute_for_validation(key)
       end
     end
