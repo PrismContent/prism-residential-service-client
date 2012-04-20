@@ -30,8 +30,8 @@ module ResidentialService
       meal_attr ||= {}
       meal_attr = HashWithIndifferentAccess.new(meal_attr)
 
-      meal_attr.merge!(starting_at: Time.parse(meal_attr[:starting_at])) if meal_attr[:starting_at].is_a?(String)
-      meal_attr.merge!(ending_at: Time.parse(meal_attr[:ending_at])) if meal_attr[:ending_at].is_a?(String)
+      meal_attr.merge!(:starting_at => Time.parse(meal_attr[:starting_at])) if meal_attr[:starting_at].is_a?(String)
+      meal_attr.merge!(:ending_at => Time.parse(meal_attr[:ending_at])) if meal_attr[:ending_at].is_a?(String)
 
       meal_attr[:served_on] ||= meal_attr[:starting_at].to_date if meal_attr[:starting_at]
       meal_attr[:served_on] ||= meal_attr[:ending_at].to_date if meal_attr[:ending_at]

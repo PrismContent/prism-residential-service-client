@@ -32,7 +32,7 @@ module ResidentialService
 
         case persistence_method(meal_type_course)
           when :post
-            response = Typhoeus::Request.post target_url, :body   => meal_type_course.attributes.to_json
+            response = Typhoeus::Request.post target_url, :body => meal_type_course.attributes.to_json
           when :put
             response = Typhoeus::Request.put target_url,  :body => meal_type_course.attributes.to_json
         end
