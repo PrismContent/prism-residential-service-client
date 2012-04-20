@@ -7,6 +7,8 @@ Bundler.require
 require 'active_support/core_ext/hash'
 require 'active_support/json'
 
+require 'json'
+
 unless defined? HashWithIndifferentAccess
   require 'active_support/hash_with_indifferent_access'
 end

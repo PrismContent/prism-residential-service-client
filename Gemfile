@@ -7,6 +7,7 @@ source "http://rubygems.org"
 # Include everything needed to run rake, tests, features, etc.
 gem 'typhoeus', '~>0.3.3'
 gem 'activesupport', '>2.3.5'
+gem 'json', '~>1.6.6'
 
 group :development, :test do
   gem "rspec", "~> 2.8.0"
