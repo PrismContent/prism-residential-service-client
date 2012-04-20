@@ -28,7 +28,7 @@ module ResidentialService
 
     def initialize(meal_attr={})
       meal_attr ||= {}
-      meal_attr = ActiveSupport::HashWithIndifferentAccess.new(meal_attr)
+      meal_attr = HashWithIndifferentAccess.new(meal_attr)
 
       meal_attr.merge!(starting_at: Time.parse(meal_attr[:starting_at])) if meal_attr[:starting_at].is_a?(String)
       meal_attr.merge!(ending_at: Time.parse(meal_attr[:ending_at])) if meal_attr[:ending_at].is_a?(String)
@@ -60,7 +60,7 @@ module ResidentialService
     end
 
     def attributes
-      @@attributes.inject(ActiveSupport::HashWithIndifferentAccess.new) do |attrs, key|
+      @@attributes.inject(HashWithIndifferentAccess.new) do |attrs, key|
         attrs.merge key => read_attribute_for_validation(key)
       end
     end

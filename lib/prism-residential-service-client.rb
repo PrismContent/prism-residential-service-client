@@ -7,9 +7,8 @@ Bundler.require
 require 'active_support/core_ext/hash'
 require 'active_support/json'
 
-begin
+unless defined? HashWithIndifferentAccess
   require 'active_support/hash_with_indifferent_access'
-rescue
 end
 
 filepath = File.join( File.dirname(__FILE__), 'support', '*.rb' )
