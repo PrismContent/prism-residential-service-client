@@ -1,11 +1,11 @@
 module ResidentialService
-  require 'active_model'
-
   class MealType
     require File.expand_path(File.dirname(__FILE__), 'meal_type_persistence')
 
-    include ActiveModel::Serializers::JSON
-    include ActiveModel::Validations
+    include Prism::Serializers::JSON
+
+    include Prism::Validation::InstanceMethods
+    extend  Prism::Validation::ClassMethods
 
     @@attributes = [:name, :begins_at, :ends_at, :account_id, :id]
 
@@ -25,7 +25,7 @@ module ResidentialService
     end
 
     def initialize(meal_attr={})
-      meal_attr ||= {}
+      meal_attr = ActiveSupport::HashWithIndifferentAccess.new(meal_attr ||{})
       self.attributes = meal_attr.slice *@@attributes
     end
 
@@ -42,7 +42,7 @@ module ResidentialService
     end
 
     def attributes
-      @@attributes.inject(ResidentialService::HashWithIndifferentAccess.new) do |attrs, key|
+      @@attributes.inject(ActiveSupport::HashWithIndifferentAccess.new) do |attrs, key|
         attrs.merge key => read_attribute_for_validation(key)
       end
     end
