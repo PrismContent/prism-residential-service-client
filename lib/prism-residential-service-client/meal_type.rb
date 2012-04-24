@@ -7,7 +7,7 @@ module ResidentialService
     include Prism::Validation::InstanceMethods
     extend  Prism::Validation::ClassMethods
 
-    @@attributes = [:name, :begins_at, :ends_at, :account_id, :id]
+    @@attributes = [:name, :begins_at, :ends_at, :account_id, :id, :course_names]
 
     validates_presence_of :name, :begins_at, :ends_at, :account_id
     attr_accessor *@@attributes
