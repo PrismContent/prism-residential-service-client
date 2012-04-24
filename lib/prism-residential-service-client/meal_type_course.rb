@@ -43,6 +43,10 @@ module ResidentialService
       ResidentialService::MealTypeCoursePersistence.destroy self
     end
 
+    def to_param
+      send :id
+    end
+
     def reload
       instance = self.class.find(self.meal_type_id, self.id)
       self.attributes = instance.attributes

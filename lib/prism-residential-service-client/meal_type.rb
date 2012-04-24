@@ -12,6 +12,14 @@ module ResidentialService
     validates_presence_of :name, :begins_at, :ends_at, :account_id
     attr_accessor *@@attributes
 
+    def begins_at=(val)
+      @begins_at = val.is_a?(Time) ? val : val.to_time
+    end
+
+    def ends_at=(val)
+      @ends_at = val.is_a?(Time) ? val : val.to_time
+    end
+
     class << self
       def find(account_id, meal_type_id = nil)
         ResidentialService::MealTypePersistence.find_for_account account_id, meal_type_id
@@ -39,6 +47,10 @@ module ResidentialService
 
     def destroy
       ResidentialService::MealTypePersistence.destroy self
+    end
+
+    def to_param
+      send :id
     end
 
     def attributes

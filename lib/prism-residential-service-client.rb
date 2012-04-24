@@ -5,6 +5,7 @@ Bundler.require
 
 # Support files first
 require 'active_support/core_ext/hash'
+require 'active_support/core_ext/string/conversions'
 require 'active_support/json'
 
 require 'json'
