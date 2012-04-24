@@ -66,7 +66,7 @@ module ResidentialService
     end
 
     def to_param
-      send :id
+      send(:id).to_s
     end
 
     def reload
