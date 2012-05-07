@@ -6,7 +6,7 @@ module ResidentialService
       def find_for_account_id(account_id, instance_id = nil)
         target_url = case
           when instance_id.is_a?(Date)
-            find_dated_for_account_id(account_id, a_date)
+            find_dated_for_account_id(account_id, instance_id)
           when instance_id.blank?
             find_all_for_account_id(account_id)
           else
