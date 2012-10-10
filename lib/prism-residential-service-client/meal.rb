@@ -7,11 +7,10 @@ module ResidentialService
     include Prism::Validation::InstanceMethods
     extend  Prism::Validation::ClassMethods
 
-    @@attributes = [:account_id, :name, :description, :starting_at, :ending_at, :served_on, :meal_type_course_id, :id]
+    @@attributes = [:account_id, :name, :description, :starting_at, :ending_at, :served_on, :meal_type_course_id, :id, :position, :meal_type_name]
 
     validates_presence_of :name, :meal_type_course_id
     attr_accessor *@@attributes
-    attr_accessor :position, :meal_type_name
 
     def starting_at=(val)
       @starting_at = val.is_a?(Time) ? val : val.to_time
