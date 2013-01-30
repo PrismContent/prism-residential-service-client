@@ -102,7 +102,7 @@ module ResidentialService
         end
 
         def meals_from(response)
-          JSON.parse(response.body)['meals'].map(&:values).flatten.map{|attr| ResidentialService::Meal.new(attr) }
+          JSON.parse(response.body)['meals'].flatten.map{|attr| ResidentialService::Meal.new(attr) }
         end
 
         def meal_from(response)

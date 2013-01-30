@@ -95,7 +95,7 @@ module ResidentialService
       end
 
       def meal_type_courses_from(response)
-        JSON.parse(response.body)['meal_type_courses'].map(&:values).flatten.map{|attr| ResidentialService::MealTypeCourse.new(attr) }
+        JSON.parse(response.body)['meal_type_courses'].flatten.map{|attr| ResidentialService::MealTypeCourse.new(attr) }
       end
 
       def meal_type_course_from(response)

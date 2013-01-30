@@ -79,7 +79,7 @@ module ResidentialService
       end
 
       def meal_types_from(response)
-        JSON.parse(response.body)['meal_types'].map(&:values).flatten
+        JSON.parse(response.body)['meal_types'].flatten
       end
 
       def meal_type_from(response)
