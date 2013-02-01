@@ -249,8 +249,5 @@ describe ResidentialService::MealTypeCourse do
         end
       end
     end
-
-    context "when the MealTypeCourse does not exist" do
-    end
   end
 end

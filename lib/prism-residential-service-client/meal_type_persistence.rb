@@ -1,7 +1,5 @@
 module ResidentialService
   class MealTypePersistence
-    require File.expand_path(File.dirname(__FILE__), 'meal_type_persistence')
-
     class << self
       def find_for_account(account_id, instance_id = nil)
         instance_id.blank? ? find_all_for_account_id(account_id) : find_single_for_account_id(account_id, instance_id)
