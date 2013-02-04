@@ -195,6 +195,31 @@ describe ResidentialService::StaffPosition do
     end
   end
 
+  describe '.delete_all' do
+    before :all do
+      @account_id = 1
+      ResidentialService::StaffPosition.create account_id: @account_id, name: 'First', sortable: true
+      ResidentialService::StaffPosition.create account_id: @account_id, name: 'Middle', sortable: true
+      ResidentialService::StaffPosition.create account_id: @account_id, name: 'Last', sortable: true
+    end
+
+    subject{ StaffPosition.delete_all @account_id }
+    context "when an account_id is not provided" do
+      it{ lambda{ ResidentialService::StaffPosition.delete_all }.should raise_error }
+    end
+
+    context "when an account_id with one or more StaffPositions is provided" do
+      before :each do
+        ResidentialService::StaffPosition.find(@account_id).size.should_not be_zero
+      end
+
+      it "should delete all the StaffPositions on the supplied account_id" do
+        ResidentialService::StaffPosition.delete_all @account_id
+        ResidentialService::StaffPosition.find(@account_id).size.should be_zero
+      end
+    end
+  end
+
   describe '#move' do
     context "when the StaffPosition exists" do
       before :each do
@@ -244,6 +269,6 @@ describe ResidentialService::StaffPosition do
   end
 
   def clear_staff_positions
-    ResidentialService::StaffPosition.find(1).each{|staff_position| staff_position.destroy }
+    ResidentialService::StaffPosition.delete_all 1
   end
 end

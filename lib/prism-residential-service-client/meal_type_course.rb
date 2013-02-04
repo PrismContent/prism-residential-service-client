@@ -23,6 +23,10 @@ module ResidentialService
         instance.save if instance.valid?
         instance
       end
+
+      def delete_all(meal_type_id)
+        find(meal_type_id).each{|course| course.destroy }
+      end
     end
 
     def initialize(meal_attr={})

@@ -191,7 +191,32 @@ describe ResidentialService::Location do
     end
   end
 
+  describe '.delete_all' do
+    before :all do
+      @account_id = 1
+      ResidentialService::Location.create account_id: @account_id, name: 'First', code: '1st'
+      ResidentialService::Location.create account_id: @account_id, name: 'Middle', code: 'mid'
+      ResidentialService::Location.create account_id: @account_id, name: 'Last', code: '3rd'
+    end
+
+    subject{ Location.delete_all @account_id }
+    context "when an account_id is not provided" do
+      it{ lambda{ ResidentialService::Location.delete_all }.should raise_error }
+    end
+
+    context "when an account_id with one or more Locations is provided" do
+      before :each do
+        ResidentialService::Location.find(@account_id).size.should_not be_zero
+      end
+
+      it "should delete all the Locations on the supplied account_id" do
+        ResidentialService::Location.delete_all @account_id
+        ResidentialService::Location.find(@account_id).size.should be_zero
+      end
+    end
+  end
+
   def clear_locations
-    ResidentialService::Location.find(1).each{|location| location.destroy }
+    ResidentialService::Location.delete_all 1
   end
 end

@@ -194,7 +194,31 @@ describe ResidentialService::Resident do
     end
   end
 
+  describe '.delete_all' do
+    before :all do
+      @account_id = 1
+      ResidentialService::Resident.create account_id: @account_id, first_name: 'Adam', last_name: 'Shirley', born_on: '2000-01-17'.to_date, married_on: '2010-06-23', spouse_name: 'LeGette'
+      ResidentialService::Resident.create account_id: @account_id, first_name: 'LeGette', last_name: 'Shirley', born_on: '2000-01-17'.to_date, married_on: '2010-06-23', spouse_name: 'Adam'
+    end
+
+    subject{ ResidentialService::Resident.delete_all @account_id }
+    context "when an account_id is not provided" do
+      it{ lambda{ ResidentialService::Resident.delete_all }.should raise_error }
+    end
+
+    context "when an account_id with one or more StaffPositions is provided" do
+      before :each do
+        ResidentialService::Resident.find(@account_id).size.should_not be_zero
+      end
+
+      it "should delete all the StaffPositions on the supplied account_id" do
+        ResidentialService::Resident.delete_all @account_id
+        ResidentialService::Resident.find(@account_id).size.should be_zero
+      end
+    end
+  end
+
   def clear_residents
-    ResidentialService::Resident.find(1).each{|resident| resident.destroy }
+    ResidentialService::Resident.delete_all 1
   end
 end

@@ -22,6 +22,10 @@ module ResidentialService
         instance.save if instance.valid?
         instance
       end
+
+      def delete_all(account_id)
+        find(account_id).each{|staff_position| staff_position.destroy }
+      end
     end
 
     def initialize(staff_position_attr={})

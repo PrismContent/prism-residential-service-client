@@ -222,6 +222,5 @@ describe ResidentialService::Meal do
       end
     end
   end
-
 end
 

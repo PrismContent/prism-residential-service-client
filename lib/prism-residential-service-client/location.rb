@@ -22,6 +22,10 @@ module ResidentialService
         instance.save if instance.valid?
         instance
       end
+
+      def delete_all(account_id)
+        find(account_id).each{|location| location.destroy }
+      end
     end
 
     def initialize(location_attr={})

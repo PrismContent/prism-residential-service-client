@@ -201,6 +201,37 @@ describe ResidentialService::MealTypeCourse do
     end
   end
 
+  describe '.delete_all' do
+    before :each do
+      @meal_type_id = @valid_attributes[:meal_type_id]
+      ResidentialService::MealTypeCourse.create @valid_attributes.merge( name: 'First' )
+      ResidentialService::MealTypeCourse.create @valid_attributes.merge( name: 'Middle' )
+      ResidentialService::MealTypeCourse.create @valid_attributes.merge( name: 'Last' )
+    end
+
+    after :each do
+      if courses = ResidentialService::MealTypeCourse.find(@meal_type_id)
+        courses.each{|course| course.destroy }
+      end
+    end
+
+    subject{ MealTypeCourse.delete_all @account_id }
+    context "when an account_id is not provided" do
+      it{ lambda{ ResidentialService::MealTypeCourse.delete_all }.should raise_error }
+    end
+
+    context "when an account_id with one or more MealTypeCourses is provided" do
+      before :each do
+        ResidentialService::MealTypeCourse.find(@meal_type_id).should_not be_empty
+      end
+
+      it "should delete all the MealTypeCourses on the supplied meal_type_id" do
+        ResidentialService::MealTypeCourse.delete_all @meal_type_id
+        ResidentialService::MealTypeCourse.find(@meal_type_id).should be_empty
+      end
+    end
+  end
+
   describe '#position' do
     it "should be generated at creation" do
       @meal_type_course = ResidentialService::MealTypeCourse.create @valid_attributes

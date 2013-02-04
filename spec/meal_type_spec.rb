@@ -180,4 +180,36 @@ describe ResidentialService::MealType do
       end
     end
   end
+
+  describe '.delete_all' do
+    before :each do
+      @account_id = 1
+      ResidentialService::MealType.create @valid_attributes.merge name: 'First'
+      ResidentialService::MealType.create @valid_attributes.merge name: 'Middle'
+      ResidentialService::MealType.create @valid_attributes.merge name: 'Last'
+    end
+
+    after :each do
+      if meal_types = ResidentialService::MealType.find(@account_id)
+        meal_types.each{|meal_type| meal_type.destroy }
+      end
+    end
+
+    subject{ MealType.delete_all @account_id }
+    context "when an account_id is not provided" do
+      it{ lambda{ ResidentialService::MealType.delete_all }.should raise_error }
+    end
+
+    context "when an account_id with one or more MealTypes is provided" do
+      before :each do
+        ResidentialService::MealType.find(@account_id).should_not be_empty
+      end
+
+      it "should delete all the MealTypes on the supplied account_id" do
+        ResidentialService::MealType.delete_all @account_id
+        ResidentialService::MealType.find(@account_id).should be_empty
+      end
+    end
+  end
+
 end
