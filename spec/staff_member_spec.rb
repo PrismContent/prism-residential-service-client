@@ -103,6 +103,13 @@ describe ResidentialService::StaffMember do
         it "should return all the persisted attributes" do
           @valid_attributes.each{|attr_id, val| @staff_member.send(attr_id).should eql val }
         end
+
+        [:hired_on].each do |attr_id|
+          it "should have a #{attr_id} attribute that is a Date" do
+            staff_member = StaffMemberialService::StaffMember.find( @staff_member.account_id, @staff_member.id )
+            staff_member.send(attr_id).should be_a_kind_of(Date)
+          end
+        end
       end
 
       context "and the StaffMember does not exist" do

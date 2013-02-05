@@ -15,6 +15,7 @@ describe ResidentialService::Resident do
       first_name:   'Adam',
       last_name:    'Shirley',
       born_on:      '1970-01-17'.to_date,
+      married_on:   '2000-06-23'.to_date,
       email:        'adam.shirley@prismcontent.com',
       spouse_name:  'LeGette Shirley'
     }
@@ -94,6 +95,13 @@ describe ResidentialService::Resident do
 
         it "should return all the persisted attributes" do
           @valid_attributes.each{|attr_id, val| @resident.send(attr_id).should eql val }
+        end
+
+        [:born_on, :married_on].each do |attr_id|
+          it "should have a #{attr_id} attribute that is a Date" do
+            resident = ResidentialService::Resident.find( @resident.account_id, @resident.id )
+            resident.send(attr_id).should be_a_kind_of(Date)
+          end
         end
       end
 

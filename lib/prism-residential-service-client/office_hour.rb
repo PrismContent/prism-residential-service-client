@@ -33,6 +33,9 @@ module ResidentialService
     def initialize(office_hour_attr={})
       office_hour_attr = HashWithIndifferentAccess.new(office_hour_attr ||{})
       self.attributes = office_hour_attr.slice *@@attributes
+
+      cast_to_date :starting_on, :ending_on
+      cast_to_time :starting_at, :ending_at
     end
 
     def new_record?
@@ -72,6 +75,22 @@ module ResidentialService
 
       def service_errors
         @service_errors ||= {}
+      end
+
+      def cast_to_time(*attr_ids)
+        attr_ids.each do |attr_id|
+          if self.attributes[attr_id].is_a?(String)
+            send "#{attr_id}=", self.attributes[attr_id].to_time
+          end
+        end
+      end
+
+      def cast_to_date(*attr_ids)
+        attr_ids.each do |attr_id|
+          if self.attributes[attr_id].is_a?(String)
+            send "#{attr_id}=", self.attributes[attr_id].to_date
+          end
+        end
       end
   end
 end

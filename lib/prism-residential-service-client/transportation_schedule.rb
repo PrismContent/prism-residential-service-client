@@ -34,8 +34,8 @@ module ResidentialService
       transportation_schedule_attr = HashWithIndifferentAccess.new(transportation_schedule_attr ||{})
       self.attributes = transportation_schedule_attr.slice *@@attributes
 
-      cast_to_date [:starting_on, :ending_on]
-      cast_to_time [:starting_at, :ending_at]
+      cast_to_date :starting_on, :ending_on
+      cast_to_time :starting_at, :ending_at
     end
 
     def new_record?
@@ -77,7 +77,7 @@ module ResidentialService
         @service_errors ||= {}
       end
 
-      def cast_to_time(attr_ids)
+      def cast_to_time(*attr_ids)
         attr_ids.each do |attr_id|
           if self.attributes[attr_id].is_a?(String)
             send "#{attr_id}=", self.attributes[attr_id].to_time
@@ -85,7 +85,7 @@ module ResidentialService
         end
       end
 
-      def cast_to_date(attr_ids)
+      def cast_to_date(*attr_ids)
         attr_ids.each do |attr_id|
           if self.attributes[attr_id].is_a?(String)
             send "#{attr_id}=", self.attributes[attr_id].to_date

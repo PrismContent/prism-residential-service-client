@@ -7,8 +7,9 @@ module ResidentialService
     include Prism::Validation::InstanceMethods
     extend  Prism::Validation::ClassMethods
 
-    @@attributes = [:first_name, :last_name, :spouse_name, :spouse_id, 
-                    :born_on, :email, :account_id, :id]
+    @@attributes = [:first_name, :last_name, :spouse_name, :spouse_id, :married_on, 
+                    :moved_in_on, :moved_out_on, :born_on, :deceased_on,
+                    :room, :email, :account_id, :id]
 
     attr_accessor *@@attributes
 
@@ -33,6 +34,7 @@ module ResidentialService
     def initialize(resident_attr={})
       resident_attr = HashWithIndifferentAccess.new(resident_attr ||{})
       self.attributes = resident_attr.slice *@@attributes
+      cast_to_date :moved_in_on, :moved_out_on, :born_on, :deceased_on, :married_on
     end
 
     def new_record?
@@ -72,6 +74,22 @@ module ResidentialService
 
       def service_errors
         @service_errors ||= {}
+      end
+
+      def cast_to_time(*attr_ids)
+        attr_ids.each do |attr_id|
+          if self.attributes[attr_id].is_a?(String)
+            send "#{attr_id}=", self.attributes[attr_id].to_time
+          end
+        end
+      end
+
+      def cast_to_date(*attr_ids)
+        attr_ids.each do |attr_id|
+          if self.attributes[attr_id].is_a?(String)
+            send "#{attr_id}=", self.attributes[attr_id].to_date
+          end
+        end
       end
   end
 end

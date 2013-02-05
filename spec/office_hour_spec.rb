@@ -94,6 +94,18 @@ describe ResidentialService::OfficeHour do
           office_hour.should be_a_kind_of(ResidentialService::OfficeHour)
         end
 
+        it "should have a starting_on attribute that is a Date" do
+          office_hour = ResidentialService::OfficeHour.find( @office_hour.account_id, @office_hour.id )
+          office_hour.starting_on.should be_a_kind_of(Date)
+        end
+
+        [:starting_at, :ending_at].each do |attr_id|
+          it "should have a #{attr_id} attribute that is a Date" do
+            office_hour = ResidentialService::OfficeHour.find( @office_hour.account_id, @office_hour.id )
+            office_hour.send(attr_id).should be_a_kind_of(Time)
+          end
+        end
+
         it "should return all the persisted attributes" do
           @valid_attributes.each{|attr_id, val| @office_hour.send(attr_id).should eql val }
         end
