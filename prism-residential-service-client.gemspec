@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "prism-residential-service-client"
-  s.version = "0.1.0.pre"
+  s.version = "0.1.0.beta"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andy Vanasse"]
-  s.date = "2013-01-30"
+  s.date = "2013-02-05"
   s.description = "An ActiveRecord-like interface for accessing the Resident Services API."
   s.email = "andyvanasse@gmail.com"
   s.extra_rdoc_files = [
@@ -29,20 +29,37 @@ Gem::Specification.new do |s|
     "config/service.yml",
     "lib/prism-residential-service-client.rb",
     "lib/prism-residential-service-client/config.rb",
+    "lib/prism-residential-service-client/location.rb",
+    "lib/prism-residential-service-client/location_persistence.rb",
     "lib/prism-residential-service-client/meal.rb",
     "lib/prism-residential-service-client/meal_persistence.rb",
     "lib/prism-residential-service-client/meal_type.rb",
     "lib/prism-residential-service-client/meal_type_course.rb",
     "lib/prism-residential-service-client/meal_type_course_persistence.rb",
     "lib/prism-residential-service-client/meal_type_persistence.rb",
+    "lib/prism-residential-service-client/office_hour.rb",
+    "lib/prism-residential-service-client/office_hour_persistence.rb",
+    "lib/prism-residential-service-client/resident.rb",
+    "lib/prism-residential-service-client/resident_persistence.rb",
+    "lib/prism-residential-service-client/staff_member.rb",
+    "lib/prism-residential-service-client/staff_member_persistence.rb",
+    "lib/prism-residential-service-client/staff_position.rb",
+    "lib/prism-residential-service-client/staff_position_persistence.rb",
+    "lib/prism-residential-service-client/transportation_schedule.rb",
+    "lib/prism-residential-service-client/transportation_schedule_persistence.rb",
     "lib/support/serializers.rb",
     "lib/support/validation.rb",
     "prism-residential-service-client.gemspec",
+    "spec/location_spec.rb",
     "spec/meal_spec.rb",
     "spec/meal_type_course_spec.rb",
     "spec/meal_type_spec.rb",
-    "spec/prism-residential-service-client_spec.rb",
-    "spec/spec_helper.rb"
+    "spec/office_hour_spec.rb",
+    "spec/resident_spec.rb",
+    "spec/spec_helper.rb",
+    "spec/staff_member_spec.rb",
+    "spec/staff_position_spec.rb",
+    "spec/transportation_schedule_spec.rb"
   ]
   s.homepage = "http://github.com/andy.vanasse@prismcontent.com/prism-residential-service-client"
   s.licenses = ["MIT"]
