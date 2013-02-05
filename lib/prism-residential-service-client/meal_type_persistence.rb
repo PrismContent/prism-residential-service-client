@@ -9,7 +9,7 @@ module ResidentialService
         response = Typhoeus::Request.get(instance_url(account_id, instance_id))
 
         if response.code == 200
-          return ResidentialService::MealType.new instance_from(response)
+          return instance_from(response)
         else
           return nil
         end
@@ -19,7 +19,7 @@ module ResidentialService
         response = Typhoeus::Request.get collection_url(account_id)
 
         if response.code == 200
-          return collection_from(response).map{|attr| ResidentialService::MealType.new attr}
+          return collection_from(response)
         else
           return nil
         end
@@ -39,10 +39,10 @@ module ResidentialService
           when 200
             return true
           when 201
-            meal_type.id= instance_from(response)['id']
+            meal_type.id= instance_from(response).id
             return true
           else
-            meal_type.send("service_errors=".to_sym, JSON.parse(response.body)['error'])
+            meal_type.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end
@@ -77,15 +77,21 @@ module ResidentialService
       end
 
       def collection_from(response)
-        JSON.parse(response.body)['meal_types'].flatten
+        attrs = json_data(response)['meal_types']
+        attrs.map{|attr| ResidentialService::MealType.new attr }
       end
 
       def instance_from(response)
-        JSON.parse(response.body)['meal_type']
+        attr = json_data(response)['meal_type']
+        ResidentialService::MealType.new attr
       end
 
       def error_from(response)
-        JSON.parse(response.body)['error']
+        json_data(response)['error']
+      end
+
+      def json_data(response)
+        JSON.parse(response.body)
       end
     end
   end

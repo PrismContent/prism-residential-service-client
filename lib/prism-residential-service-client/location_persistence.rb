@@ -44,7 +44,7 @@ module ResidentialService
             location.id= instance_from(response)['id']
             return true
           else
-            location.send("service_errors=".to_sym, JSON.parse(response.body)['error'])
+            location.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end
@@ -79,15 +79,19 @@ module ResidentialService
       end
 
       def collection_from(response)
-        JSON.parse(response.body)['locations'].flatten
+        json_data(response)['locations']
       end
 
       def instance_from(response)
-        JSON.parse(response.body)['location']
+        json_data(response)['location']
       end
 
       def error_from(response)
-        JSON.parse(response.body)['error']
+        json_data(response)['error']
+      end
+
+      def json_data(response)
+        JSON.parse(response.body)
       end
     end
   end

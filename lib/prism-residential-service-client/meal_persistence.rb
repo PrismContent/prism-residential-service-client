@@ -54,7 +54,7 @@ module ResidentialService
             meal.position= instance_from(response).position
             return true
           else
-            meal.send("service_errors=".to_sym, JSON.parse(response.body)['error'])
+            meal.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end
@@ -102,15 +102,21 @@ module ResidentialService
         end
 
         def collection_from(response)
-          JSON.parse(response.body)['meals'].flatten.map{|attr| ResidentialService::Meal.new(attr) }
+          attrs = json_data(response)['meals']
+          attrs.map{|attr| ResidentialService::Meal.new(attr) }
         end
 
         def instance_from(response)
-          ResidentialService::Meal.new(JSON.parse(response.body)['meal'])
+          attr = json_data(response)['meal']
+          ResidentialService::Meal.new attr
         end
 
         def error_from(response)
-          JSON.parse(response.body)['error']
+          json_data(response)['error']
+        end
+
+        def json_data(response)
+          JSON.parse(response.body)
         end
     end
   end

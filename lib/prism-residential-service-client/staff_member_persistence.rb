@@ -11,7 +11,7 @@ module ResidentialService
         response = Typhoeus::Request.get(instance_url(account_id, instance_id))
 
         if response.code == 200
-          return ResidentialService::StaffMember.new instance_from(response)
+          return instance_from(response)
         else
           return nil
         end
@@ -21,7 +21,7 @@ module ResidentialService
         response = Typhoeus::Request.get collection_url(account_id)
 
         if response.code == 200
-          return collection_from(response).map{|attr| ResidentialService::StaffMember.new attr}
+          return collection_from(response)
         else
           return nil
         end
@@ -41,11 +41,12 @@ module ResidentialService
           when 200
             return true
           when 201
-            staff_member.id = instance_from(response)['id']
-            staff_member.position = instance_from(response)['position']
+            instance = instance_from(response)
+            staff_member.id = instance.id
+            staff_member.position = instance.position
             return true
           else
-            staff_member.send("service_errors=".to_sym, JSON.parse(response.body)['error'])
+            staff_member.send("service_errors=".to_sym, json_data(response))
             return false
         end
       end
@@ -66,7 +67,6 @@ module ResidentialService
 
         if response.code==200
           staff_member.attributes = collection_from(response).
-                                        map{|attr| ResidentialService::StaffMember.new attr }.
                                         detect{|position| position.id == staff_member.id }.
                                         attributes
         end
@@ -114,15 +114,21 @@ module ResidentialService
       end
 
       def collection_from(response)
-        JSON.parse(response.body)['staff_members'].flatten
+        attrs = json_data(response)['staff_members']
+        attrs.map{|attr| ResidentialService::StaffMember.new attr }
       end
 
       def instance_from(response)
-        JSON.parse(response.body)['staff_member']
+        attr = json_data(response)['staff_member']
+        ResidentialService::StaffMember.new attr 
       end
 
       def error_from(response)
-        JSON.parse(response.body)['error']
+        json_data(response)['error']
+      end
+
+      def json_data(response)
+        JSON.parse(response.body) 
       end
     end
   end
