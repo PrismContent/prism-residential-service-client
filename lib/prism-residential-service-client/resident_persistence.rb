@@ -11,7 +11,7 @@ module ResidentialService
         response = Typhoeus::Request.get(instance_url(account_id, instance_id))
 
         if response.code == 200
-          return ResidentialService::Resident.new resident_from(response)
+          return ResidentialService::Resident.new instance_from(response)
         else
           return nil
         end
@@ -21,7 +21,7 @@ module ResidentialService
         response = Typhoeus::Request.get collection_url(account_id)
 
         if response.code == 200
-          return residents_from(response).map{|attr| ResidentialService::Resident.new attr}
+          return collection_from(response).map{|attr| ResidentialService::Resident.new attr}
         else
           return nil
         end
@@ -41,7 +41,7 @@ module ResidentialService
           when 200
             return true
           when 201
-            resident.id= resident_from(response)['id']
+            resident.id= instance_from(response)['id']
             return true
           else
             resident.send("service_errors=".to_sym, JSON.parse(response.body)['error'])
@@ -78,11 +78,11 @@ module ResidentialService
         ResidentialService::Config.hydra.queue(request)
       end
 
-      def residents_from(response)
+      def collection_from(response)
         JSON.parse(response.body)['residents'].flatten
       end
 
-      def resident_from(response)
+      def instance_from(response)
         JSON.parse(response.body)['resident']
       end
 

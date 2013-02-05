@@ -9,7 +9,7 @@ module ResidentialService
         response = Typhoeus::Request.get(instance_url(account_id, instance_id))
 
         if response.code == 200
-          return ResidentialService::StaffPosition.new staff_position_from(response)
+          return ResidentialService::StaffPosition.new instance_from(response)
         else
           return nil
         end
@@ -19,7 +19,7 @@ module ResidentialService
         response = Typhoeus::Request.get collection_url(account_id)
 
         if response.code == 200
-          return staff_positions_from(response).map{|attr| ResidentialService::StaffPosition.new attr}
+          return collection_from(response).map{|attr| ResidentialService::StaffPosition.new attr}
         else
           return nil
         end
@@ -39,7 +39,7 @@ module ResidentialService
           when 200
             return true
           when 201
-            staff_position_attr = staff_position_from(response)
+            staff_position_attr = instance_from(response)
             staff_position.id = staff_position_attr['id']
             staff_position.position = staff_position_attr['position']
             return true
@@ -64,7 +64,7 @@ module ResidentialService
         end
 
         if response.code==200
-          staff_position.attributes = staff_positions_from(response).
+          staff_position.attributes = collection_from(response).
                                         map{|attr| ResidentialService::StaffPosition.new attr }.
                                         detect{|position| position.id == staff_position.id }.
                                         attributes
@@ -112,11 +112,11 @@ module ResidentialService
         ResidentialService::Config.hydra.queue(request)
       end
 
-      def staff_positions_from(response)
+      def collection_from(response)
         JSON.parse(response.body)['staff_positions'].flatten
       end
 
-      def staff_position_from(response)
+      def instance_from(response)
         JSON.parse(response.body)['staff_position']
       end
 

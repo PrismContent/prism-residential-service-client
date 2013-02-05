@@ -11,7 +11,7 @@ module ResidentialService
         response = Typhoeus::Request.get(instance_url(meal_type_id, instance_id))
 
         if response.code == 200
-          return meal_type_course_from(response)
+          return instance_from(response)
         else
           return nil
         end
@@ -21,7 +21,7 @@ module ResidentialService
         response = Typhoeus::Request.get collection_url(meal_type_id)
 
         if response.code == 200
-          return meal_type_courses_from(response)
+          return collection_from(response)
         else
           return nil
         end
@@ -42,9 +42,9 @@ module ResidentialService
             return true
           when 201
             [:id, :position, :meal_type_name].each do |remote_attr|
-              meal_type_course.send("#{remote_attr}=".to_sym, meal_type_course_from(response).send(remote_attr))
+              meal_type_course.send("#{remote_attr}=".to_sym, instance_from(response).send(remote_attr))
             end
-            meal_type_course.position= meal_type_course_from(response).position
+            meal_type_course.position= instance_from(response).position
             return true
           else
             meal_type_course.send("service_errors=".to_sym, JSON.parse(response.body)['error'])
@@ -59,7 +59,7 @@ module ResidentialService
         response = Typhoeus::Request.put target_url,  :body => meal_type_course.attributes.to_json
 
         if response.code == 200
-          meal_type_course.attributes = meal_type_courses_from(response).detect{|course| course.id == meal_type_course.id }.attributes
+          meal_type_course.attributes = collection_from(response).detect{|course| course.id == meal_type_course.id }.attributes
         end
 
         response.code == 200
@@ -94,11 +94,11 @@ module ResidentialService
         ResidentialService::Config.hydra.queue(request)
       end
 
-      def meal_type_courses_from(response)
+      def collection_from(response)
         JSON.parse(response.body)['meal_type_courses'].flatten.map{|attr| ResidentialService::MealTypeCourse.new(attr) }
       end
 
-      def meal_type_course_from(response)
+      def instance_from(response)
         ResidentialService::MealTypeCourse.new(JSON.parse(response.body)['meal_type_course'])
       end
 

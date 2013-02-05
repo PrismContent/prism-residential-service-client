@@ -11,7 +11,7 @@ module ResidentialService
         response = Typhoeus::Request.get(instance_url(account_id, instance_id))
 
         if response.code == 200
-          return ResidentialService::StaffMember.new staff_member_from(response)
+          return ResidentialService::StaffMember.new instance_from(response)
         else
           return nil
         end
@@ -21,7 +21,7 @@ module ResidentialService
         response = Typhoeus::Request.get collection_url(account_id)
 
         if response.code == 200
-          return staff_members_from(response).map{|attr| ResidentialService::StaffMember.new attr}
+          return collection_from(response).map{|attr| ResidentialService::StaffMember.new attr}
         else
           return nil
         end
@@ -41,8 +41,8 @@ module ResidentialService
           when 200
             return true
           when 201
-            staff_member.id = staff_member_from(response)['id']
-            staff_member.position = staff_member_from(response)['position']
+            staff_member.id = instance_from(response)['id']
+            staff_member.position = instance_from(response)['position']
             return true
           else
             staff_member.send("service_errors=".to_sym, JSON.parse(response.body)['error'])
@@ -65,7 +65,7 @@ module ResidentialService
         end
 
         if response.code==200
-          staff_member.attributes = staff_members_from(response).
+          staff_member.attributes = collection_from(response).
                                         map{|attr| ResidentialService::StaffMember.new attr }.
                                         detect{|position| position.id == staff_member.id }.
                                         attributes
@@ -113,11 +113,11 @@ module ResidentialService
         ResidentialService::Config.hydra.queue(request)
       end
 
-      def staff_members_from(response)
+      def collection_from(response)
         JSON.parse(response.body)['staff_members'].flatten
       end
 
-      def staff_member_from(response)
+      def instance_from(response)
         JSON.parse(response.body)['staff_member']
       end
 
