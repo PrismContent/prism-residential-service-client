@@ -60,6 +60,10 @@ module ResidentialService
       send(:id).to_s
     end
 
+    def to_key
+      send(:id) ? [send(:id)] : nil
+    end
+
     def attributes
       @@attributes.inject(HashWithIndifferentAccess.new) do |attrs, key|
         attrs.merge key => read_attribute_for_validation(key)
