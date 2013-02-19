@@ -15,6 +15,10 @@ module ResidentialService
     validates_presence_of :purpose, :recurrence, :account_id
 
     class << self
+      def model_name
+        'OfficeHour'
+      end
+
       def find(account_id, office_hour_id = nil)
         ResidentialService::OfficeHourPersistence.find_for_account account_id, office_hour_id
       end

@@ -15,6 +15,10 @@ module ResidentialService
     validates_presence_of :destination, :recurrence, :account_id
 
     class << self
+      def model_name
+        'TransportationSchedule'
+      end
+
       def find(account_id, transportation_schedule_id = nil)
         ResidentialService::TransportationSchedulePersistence.find_for_account account_id, transportation_schedule_id
       end

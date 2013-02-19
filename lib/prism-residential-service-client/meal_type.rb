@@ -21,6 +21,10 @@ module ResidentialService
     end
 
     class << self
+      def model_name
+        'MealType'
+      end
+
       def find(account_id, meal_type_id = nil)
         ResidentialService::MealTypePersistence.find_for_account account_id, meal_type_id
       end

@@ -13,6 +13,10 @@ module ResidentialService
     validates_presence_of :name, :account_id
 
     class << self
+      def model_name
+        'Location'
+      end
+
       def find(account_id, location_id = nil)
         ResidentialService::LocationPersistence.find_for_account account_id, location_id
       end
