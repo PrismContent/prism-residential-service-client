@@ -15,10 +15,10 @@ module ResidentialService
     class << self
       def model_name
         @model_name = case
-          when ActiveModel::Naming
-            ActiveModel::Naming.new 'Location'
+          when ActiveModel::Name
+            ActiveModel::Name.new self
           when ActiveSupport::ModelName
-            ActiveSupport::ModelName.new 'Location'
+            ActiveSupport::ModelName.new self
           else
             'Location'
         end
