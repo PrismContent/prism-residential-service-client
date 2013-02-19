@@ -5,9 +5,9 @@
 
 Gem::Specification.new do |s|
   s.name = "prism-residential-service-client"
-  s.version = "0.1.2.pre5"
+  s.version = "0.1.2"
 
-  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andy Vanasse"]
   s.date = "2013-02-19"
   s.description = "An ActiveRecord-like interface for accessing the Resident Services API."
