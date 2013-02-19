@@ -7,23 +7,14 @@ module ResidentialService
     include Prism::Validation::InstanceMethods
     extend  Prism::Validation::ClassMethods
 
+    extend ActiveModel::Naming if ActiveModel::Naming
+
     @@attributes = [:name, :code, :account_id, :id]
     attr_accessor *@@attributes
 
     validates_presence_of :name, :account_id
 
     class << self
-      def model_name
-        @model_name = case
-          when ActiveModel::Name
-            ActiveModel::Name.new self
-          when ActiveSupport::ModelName
-            ActiveSupport::ModelName.new self
-          else
-            'Location'
-        end
-      end
-
       def find(account_id, location_id = nil)
         ResidentialService::LocationPersistence.find_for_account account_id, location_id
       end
