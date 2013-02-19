@@ -14,7 +14,14 @@ module ResidentialService
 
     class << self
       def model_name
-        'Location'
+        @model_name = case
+          when ActiveModel::Naming
+            ActiveModel::Naming.new 'Location'
+          when ActiveSupport::ModelName
+            ActiveSupport::ModelName.new 'Location'
+          else
+            'Location'
+        end
       end
 
       def find(account_id, location_id = nil)
