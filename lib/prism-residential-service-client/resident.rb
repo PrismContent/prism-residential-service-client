@@ -45,6 +45,13 @@ module ResidentialService
       self.id.blank?
     end
 
+    def update_attributes(attr={})
+      attr.keys.each do |attr_id|
+        self.send("#{attr_id}=", attr[attr_id])
+      end
+      save
+    end
+
     def save
       ResidentialService::ResidentPersistence.save self
     end

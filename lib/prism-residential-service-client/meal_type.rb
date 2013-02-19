@@ -7,6 +7,8 @@ module ResidentialService
     include Prism::Validation::InstanceMethods
     extend  Prism::Validation::ClassMethods
 
+    extend ActiveModel::Naming if ActiveModel::Naming
+
     @@attributes = [:name, :begins_at, :ends_at, :account_id, :id, :course_names]
 
     validates_presence_of :name, :begins_at, :ends_at, :account_id
@@ -49,6 +51,13 @@ module ResidentialService
 
     def new_record?
       self.id.blank?
+    end
+
+    def update_attributes(attr={})
+      attr.keys.each do |attr_id|
+        self.send("#{attr_id}=", attr[attr_id])
+      end
+      save
     end
 
     def save
