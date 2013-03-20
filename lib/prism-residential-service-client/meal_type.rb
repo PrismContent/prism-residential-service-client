@@ -23,10 +23,6 @@ module ResidentialService
     end
 
     class << self
-      def model_name
-        'MealType'
-      end
-
       def find(account_id, meal_type_id = nil)
         ResidentialService::MealTypePersistence.find_for_account account_id, meal_type_id
       end
@@ -70,6 +66,10 @@ module ResidentialService
 
     def to_param
       send(:id).to_s
+    end
+
+    def to_key
+      send(:id) ? [send(:id)] : nil
     end
 
     def attributes

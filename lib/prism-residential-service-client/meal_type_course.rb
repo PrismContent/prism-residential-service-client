@@ -16,10 +16,6 @@ module ResidentialService
     attr_accessor :account_id
 
     class << self
-      def model_name
-        'MealTypeCourse'
-      end
-
       def find(meal_type_id, meal_type_course_id = nil)
         ResidentialService::MealTypeCoursePersistence.find_for_meal_type meal_type_id, meal_type_course_id
       end
@@ -62,6 +58,10 @@ module ResidentialService
 
     def to_param
       send(:id).to_s
+    end
+
+    def to_key
+      send(:id) ? [send(:id)] : nil
     end
 
     def reload

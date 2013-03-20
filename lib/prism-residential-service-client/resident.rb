@@ -16,10 +16,6 @@ module ResidentialService
     validates_presence_of :first_name, :last_name, :account_id
 
     class << self
-      def model_name
-        'Resident'
-      end
-
       def find(account_id, resident_id = nil)
         ResidentialService::ResidentPersistence.find_for_account account_id, resident_id
       end
@@ -62,6 +58,10 @@ module ResidentialService
 
     def to_param
       send(:id).to_s
+    end
+
+    def to_key
+      send(:id) ? [send(:id)] : nil
     end
 
     def attributes
