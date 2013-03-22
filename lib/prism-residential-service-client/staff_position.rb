@@ -83,14 +83,14 @@ module ResidentialService
     def read_attribute_for_validation(key)
       send key
     end
+    
+    def service_errors
+      @service_errors ||= {}
+    end
 
     private
       def service_errors=(errors)
         @service_errors = errors
-      end
-
-      def service_errors
-        @service_errors ||= {}
-      end
+      end      
   end
 end

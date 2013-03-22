@@ -110,13 +110,13 @@ module ResidentialService
       @meal_type ||= ResidentialService::MealType.find(self.account_id, self.meal_type_id)
     end
 
+    def service_errors
+      @service_errors ||= {}
+    end
+    
     private
       def service_errors=(errors)
         @service_errors = errors
-      end
-
-      def service_errors
-        @service_errors ||= {}
-      end
+      end      
   end
 end
