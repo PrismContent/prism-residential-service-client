@@ -13,6 +13,11 @@ module Prism
     end
 
     module InstanceMethods
+      def instance_errors
+        return errors if !valid?
+        service_errors
+      end
+
       def valid?
         clear_errors
 
@@ -40,7 +45,7 @@ module Prism
     class PresenceValidator
       def initialize(attribute_id, message = nil)
         @attribute_id = attribute_id
-        @message = message || 'must be provided'
+        @message = message || "#{attribute_id} must be provided".titleize
       end
 
       def valid?(instance)
