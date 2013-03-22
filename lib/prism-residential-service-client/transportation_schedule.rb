@@ -23,7 +23,7 @@ module ResidentialService
 
       def create(attributes={})
         instance = new(attributes)
-        instance.save if instance.valid?
+        instance.save
         instance
       end
 
@@ -52,7 +52,7 @@ module ResidentialService
     end
 
     def save
-      ResidentialService::TransportationSchedulePersistence.save self
+      ResidentialService::TransportationSchedulePersistence.save(self) if valid?
     end
 
     def destroy

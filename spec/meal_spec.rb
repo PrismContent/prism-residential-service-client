@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe ResidentialService::Meal do
   before :each do
-    midnight = Time.now
+    midnight = Time.parse('2013/01/01 00:00:00')
 
     @meal_type = ResidentialService::MealType.create({ 
       name:       'Breakfast',

@@ -29,7 +29,7 @@ module ResidentialService
 
       def create(attributes={})
         instance = new(attributes)
-        instance.save if instance.valid?
+        instance.save
         instance
       end
 
@@ -57,7 +57,7 @@ module ResidentialService
     end
 
     def save
-      ResidentialService::MealTypePersistence.save self
+      ResidentialService::MealTypePersistence.save(self) if valid?
     end
 
     def destroy

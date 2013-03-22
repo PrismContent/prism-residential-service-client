@@ -33,7 +33,7 @@ module ResidentialService
 
       def create(attributes={})
         instance = new(attributes)
-        instance.save if instance.valid?
+        instance.save
         instance
       end
     end
@@ -66,7 +66,7 @@ module ResidentialService
       self.served_on ||= self.starting_at.to_date if self.starting_at
       self.served_on ||= self.ending_at.to_date if self.ending_at
 
-      ResidentialService::MealPersistence.save self
+      ResidentialService::MealPersistence.save(self) if valid?
     end
 
     def destroy

@@ -16,6 +16,7 @@ describe ResidentialService::StaffMember do
       account_id:   1,
       first_name:   'Adam',
       last_name:    'Shirley',
+      hired_on:     Date.yesterday,
       staff_position_id: @president.id 
     }
   end
@@ -106,7 +107,7 @@ describe ResidentialService::StaffMember do
 
         [:hired_on].each do |attr_id|
           it "should have a #{attr_id} attribute that is a Date" do
-            staff_member = StaffMemberialService::StaffMember.find( @staff_member.account_id, @staff_member.id )
+            staff_member = ResidentialService::StaffMember.find( @staff_member.account_id, @staff_member.id )
             staff_member.send(attr_id).should be_a_kind_of(Date)
           end
         end
