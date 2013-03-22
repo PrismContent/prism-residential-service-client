@@ -7,6 +7,8 @@ module ResidentialService
     include Prism::Validation::InstanceMethods
     extend  Prism::Validation::ClassMethods
 
+    extend ActiveModel::Naming if Object.const_defined?('ActiveModel')
+
     @@attributes = [:first_name, :last_name, :spouse_name, :spouse_id, :married_on, 
                     :moved_in_on, :moved_out_on, :born_on, :deceased_on,
                     :room, :email, :account_id, :id]
