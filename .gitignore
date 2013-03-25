@@ -1,3 +1,6 @@
+# development service yml
+config/service.yml
+
 # rcov generated
 coverage
 coverage.data

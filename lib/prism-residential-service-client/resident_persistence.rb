@@ -36,6 +36,11 @@ module ResidentialService
           when :put
             response = Typhoeus::Request.put target_url,  :body => resident.attributes.to_json
         end
+        
+        if response.timed_out?
+          resident.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
+          return false
+        end
 
         case response.code
           when 200
@@ -43,6 +48,9 @@ module ResidentialService
           when 201
             resident.id= instance_from(response).id
             return true
+          when 0 
+            resident.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
+            return false  
           else
             resident.send("service_errors=".to_sym, error_from(response))
             return false
