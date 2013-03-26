@@ -31,6 +31,10 @@ module ResidentialService
       def delete_all(account_id)
         find(account_id).each{|staff_position| staff_position.destroy }
       end
+
+      def birthdays_for_month(account_id, month_id)
+        ResidentialService::ResidentPersistence.find_birthdays_for account_id, Date::MONTHNAMES[month_id].downcase
+      end
     end
 
     def initialize(resident_attr={})

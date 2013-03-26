@@ -10,7 +10,7 @@ module ResidentialService
     extend ActiveModel::Naming if Object.const_defined?('ActiveModel')
 
     @@attributes = [:purpose, :recurrence, :ordinals, :weeks_of_month, :starting_on, :ending_on, 
-                    :starting_at, :ending_at, :account_id, :id]
+                    :starting_at, :ending_at, :account_id, :id, :location_id ]
 
     attr_accessor *@@attributes
 
@@ -38,6 +38,15 @@ module ResidentialService
 
       cast_to_date :starting_on, :ending_on
       cast_to_time :starting_at, :ending_at
+    end
+
+    def location
+      @location ||= ResidentialService::Location.find(self.account_id, self.location_id)
+    end
+
+    def location=(location)
+      @location = location
+      self.location_id = @location.id
     end
 
     def new_record?

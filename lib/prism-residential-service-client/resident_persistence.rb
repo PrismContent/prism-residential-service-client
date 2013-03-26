@@ -27,6 +27,16 @@ module ResidentialService
         end
       end
 
+      def find_birthdays_for(account_id, month_id)
+        response = Typhoeus::Request.get birthday_url(account_id, month_id)
+
+        if response.code == 200
+          return collection_from(response)
+        else
+          return nil
+        end
+      end
+
       def save(resident)
         target_url = persistence_url(resident)
 
@@ -68,6 +78,10 @@ module ResidentialService
         else
           "#{collection_url(args.first)}/#{args.last}"
         end
+      end
+
+      def birthday_url(account_id, month_id)
+        "http://#{ResidentialService::Config.host}/v1/accounts/#{account_id}/birthdays/#{month_id}"
       end
 
       def collection_url(account_id)
