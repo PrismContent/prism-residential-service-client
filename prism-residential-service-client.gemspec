@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "prism-residential-service-client"
-  s.version = "0.1.4"
+  s.version = "0.1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andy Vanasse"]
-  s.date = "2013-03-22"
+  s.date = "2013-03-26"
   s.description = "An ActiveRecord-like interface for accessing the Resident Services API."
   s.email = "andyvanasse@gmail.com"
   s.extra_rdoc_files = [
@@ -28,6 +28,8 @@ Gem::Specification.new do |s|
     "VERSION",
     "config/service.yml",
     "lib/prism-residential-service-client.rb",
+    "lib/prism-residential-service-client/anniversary.rb",
+    "lib/prism-residential-service-client/anniversary_persistence.rb",
     "lib/prism-residential-service-client/config.rb",
     "lib/prism-residential-service-client/location.rb",
     "lib/prism-residential-service-client/location_persistence.rb",
@@ -64,7 +66,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/andy.vanasse@prismcontent.com/prism-residential-service-client"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "1.8.17"
   s.summary = "Client for the Prism Residential Service"
 
   if s.respond_to? :specification_version then
