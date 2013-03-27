@@ -11,7 +11,7 @@ module ResidentialService
         response = Typhoeus::Request.get(instance_url(account_id, instance_id))
 
         if response.code == 200
-          return ResidentialService::TransportationSchedule.new instance_from(response)
+          return instance_from(response)
         else
           return nil
         end
@@ -21,7 +21,7 @@ module ResidentialService
         response = Typhoeus::Request.get collection_url(account_id)
 
         if response.code == 200
-          return collection_from(response).map{|attr| ResidentialService::TransportationSchedule.new attr}
+          return collection_from(response)
         else
           return nil
         end
@@ -46,7 +46,7 @@ module ResidentialService
           when 200
             return true
           when 201
-            transportation_schedule.id= instance_from(response)['id']
+            transportation_schedule.id= instance_from(response).id
             return true
           when 0 
             transportation_schedule.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
@@ -87,11 +87,13 @@ module ResidentialService
       end
 
       def collection_from(response)
-        json_data(response)['transportation_schedules']
+        attrs = json_data(response)['transportation_schedules']
+        attrs.map{|attr| ResidentialService::TransportationSchedule.new attr }
       end
 
       def instance_from(response)
-        json_data(response)['transportation_schedule']
+        attr = json_data(response)['transportation_schedule']
+        ResidentialService::TransportationSchedule.new attr
       end
 
       def error_from(response)

@@ -54,7 +54,7 @@ module ResidentialService
             staff_member.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
             return false  
           else
-            staff_member.send("service_errors=".to_sym, json_data(response))
+            staff_member.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end

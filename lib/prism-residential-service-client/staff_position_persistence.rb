@@ -52,7 +52,7 @@ module ResidentialService
             staff_position.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
             return false
           else
-            staff_position.send("service_errors=".to_sym, JSON.parse(response.body)['error'])
+            staff_position.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end

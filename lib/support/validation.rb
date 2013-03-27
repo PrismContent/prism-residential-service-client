@@ -20,12 +20,15 @@ module Prism
 
       def valid?
         clear_errors
+        
+        # always use ResidentialService if/when inherited later
+        klass = "residential_service/#{self.class.to_s.demodulize.underscore}".camelize.constantize
 
-        self.class.validators.each do |validator|
+        klass.validators.each do |validator|
           validator.valid? self
         end
 
-        errors.empty?
+        errors.empty?        
       end
 
       def errors
