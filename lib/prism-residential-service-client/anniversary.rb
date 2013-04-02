@@ -19,6 +19,10 @@ module ResidentialService
       self.attributes = anniversary_attr.slice *@@attributes
     end
 
+    def married_on=(marriage_date)
+      @married_on = marriage_date.respond_to?(:to_date) ? marriage_date.to_date : marriage_date
+    end
+
     def attributes
       @@attributes.inject(HashWithIndifferentAccess.new) do |attrs, key|
         attrs.merge key => read_attribute_for_validation(key)
