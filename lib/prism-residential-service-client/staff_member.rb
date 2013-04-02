@@ -10,7 +10,7 @@ module ResidentialService
     extend ActiveModel::Naming if Object.const_defined?('ActiveModel')
 
     @@attributes = [:first_name, :last_name, :hired_on, :terminated_on, 
-                    :staff_position_id, :position, :account_id, :id]
+                    :staff_position_id, :position, :account_id, :id, :staff_position_name]
 
     attr_accessor *@@attributes
 
