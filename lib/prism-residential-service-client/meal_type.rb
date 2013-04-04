@@ -15,11 +15,11 @@ module ResidentialService
     attr_accessor *@@attributes
 
     def begins_at=(val)
-      @begins_at = val.is_a?(Time) ? val : val.to_time
+      @begins_at = val.is_a?(Time) ? val : val.to_time.in_time_zone
     end
 
     def ends_at=(val)
-      @ends_at = val.is_a?(Time) ? val : val.to_time
+      @ends_at = val.is_a?(Time) ? val : val.to_time.in_time_zone
     end
 
     class << self
@@ -98,7 +98,7 @@ module ResidentialService
       def cast_to_time(*attr_ids)
         attr_ids.each do |attr_id|
           if self.attributes[attr_id].is_a?(String)
-            send "#{attr_id}=", self.attributes[attr_id].to_time
+            send "#{attr_id}=", self.attributes[attr_id].to_time.in_time_zone
           end
         end
       end
