@@ -102,7 +102,7 @@ module ResidentialService
       def cast_to_time(*attr_ids)
         attr_ids.each do |attr_id|
           if self.attributes[attr_id].is_a?(String)
-            send "#{attr_id}=", self.attributes[attr_id].to_time
+            send "#{attr_id}=", self.attributes[attr_id].to_time.in_time_zone
           end
         end
       end
