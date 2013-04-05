@@ -1,51 +1,19 @@
 module ResidentialService
-  class MealTypeCourse
+  class MealTypeCourse < Prism::RemoteRecord
     require File.expand_path(File.dirname(__FILE__), 'meal_type_course_persistence')
 
-    include Prism::Serializers::JSON
-
-    include Prism::Validation::InstanceMethods
-    extend  Prism::Validation::ClassMethods
-
-    extend ActiveModel::Naming if Object.const_defined?('ActiveModel')
-
-    @@attributes = [:name, :position, :meal_type_name, :meal_type_id, :id]
+    self.attribute_names = {
+      :name => String, :position => Integer, :meal_type_name => String, 
+      :meal_type_id => Integer, :id => Integer
+    }
 
     validates_presence_of :name, :meal_type_id
-    attr_accessor *@@attributes
     attr_accessor :account_id
 
     class << self
       def find(meal_type_id, meal_type_course_id = nil)
         ResidentialService::MealTypeCoursePersistence.find_for_meal_type meal_type_id, meal_type_course_id
       end
-
-      def create(attributes={})
-        instance = new(attributes)
-        instance.save
-        instance
-      end
-
-      def delete_all(meal_type_id)
-        find(meal_type_id).each{|course| course.destroy }
-      end
-    end
-
-    def initialize(meal_attr={})
-      meal_attr ||= {}
-      meal_attr = HashWithIndifferentAccess.new(meal_attr)
-      self.attributes = meal_attr.slice *@@attributes
-    end
-
-    def new_record?
-      self.id.blank?
-    end
-
-    def update_attributes(attr={})
-      attr.keys.each do |attr_id|
-        self.send("#{attr_id}=", attr[attr_id])
-      end
-      save
     end
 
     def save
@@ -54,14 +22,6 @@ module ResidentialService
 
     def destroy
       ResidentialService::MealTypeCoursePersistence.destroy self
-    end
-
-    def to_param
-      send(:id).to_s
-    end
-
-    def to_key
-      send(:id) ? [send(:id)] : nil
     end
 
     def reload
@@ -74,20 +34,6 @@ module ResidentialService
       ResidentialService::MealTypeCoursePersistence.move self, direction
     end
 
-    def attributes
-      @@attributes.inject(HashWithIndifferentAccess.new) do |attrs, key|
-        attrs.merge key => read_attribute_for_validation(key)
-      end
-    end
-
-    def attributes=(attrs)
-      attrs.each_pair{|k,v| send "#{k}=", v}
-    end
-
-    def read_attribute_for_validation(key)
-      send key
-    end
-
     def meal_type=(meal_type)
       raise(ArgumentError, "Expected a MealType") unless meal_type.is_a?(ResidentialService::MealType)
       send('meal_type_id='.to_sym, meal_type.id)
@@ -97,14 +43,5 @@ module ResidentialService
     def meal_type
       @meal_type ||= ResidentialService::MealType.find(self.account_id, self.meal_type_id)
     end
-    
-    def service_errors
-      @service_errors ||= {}
-    end
-
-    private
-      def service_errors=(errors)
-        @service_errors = errors
-      end      
   end
 end

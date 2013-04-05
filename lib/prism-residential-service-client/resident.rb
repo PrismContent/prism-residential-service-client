@@ -2,11 +2,12 @@ module ResidentialService
   class Resident < Prism::RemoteRecord
     require File.expand_path(File.dirname(__FILE__), 'resident_persistence')
 
-    self.attribute_names = [ 
-      :first_name, :last_name, :spouse_name, :spouse_id, :married_on, 
-      :moved_in_on, :moved_out_on, :born_on, :deceased_on,
-      :room, :email, :account_id, :id
-    ]
+    self.attribute_names = { 
+      :first_name => String, :last_name => String, :spouse_name => String, :spouse_id => Integer, 
+      :married_on => Date, :moved_in_on => Date, :moved_out_on => Date, :born_on => Date, 
+      :deceased_on => Date, :room => String, :email => String, :account_id => Integer, 
+      :id => Integer
+    }
 
     validates_presence_of :first_name, :last_name, :account_id
 

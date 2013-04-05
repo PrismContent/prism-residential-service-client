@@ -1,65 +1,24 @@
 module ResidentialService
-  class Meal
+  class Meal < Prism::RemoteRecord
     require File.expand_path(File.dirname(__FILE__), 'meal_type_course_persistence')
 
-    include Prism::Serializers::JSON
-
-    include Prism::Validation::InstanceMethods
-    extend  Prism::Validation::ClassMethods
-
-    extend ActiveModel::Naming if Object.const_defined?('ActiveModel')
-
-    @@attributes = [:account_id, :name, :description, :starting_at, :ending_at, :served_on, :meal_type_course_id, :id, :position, :meal_type_name]
+    self.attribute_names = {
+      :account_id => Integer, :name => String, :description => String, :starting_at => Time, 
+      :ending_at => Time, :served_on => Date, :meal_type_course_id => Integer, :id => Integer, 
+      :position => Integer, :meal_type_name => String
+    }
 
     validates_presence_of :name, :meal_type_course_id
-    attr_accessor *@@attributes
-
-    def starting_at=(val)
-      @starting_at = val.nil? || val.is_a?(Time) ? val : val.to_time.in_time_zone
-    end
-
-    def ending_at=(val)
-      @ending_at = val.nil? || val.is_a?(Time) ? val : val.to_time.in_time_zone
-    end
-
-    def served_on=(val)
-      @served_on = val.nil? || val.is_a?(Date) ? val : val.to_date
-    end
-
     class << self
       def find(account_id, meal_type_course_id = nil)
         ResidentialService::MealPersistence.find_for_account_id account_id, meal_type_course_id
       end
-
-      def create(attributes={})
-        instance = new(attributes)
-        instance.save
-        instance
-      end
     end
 
     def initialize(meal_attr={})
-      meal_attr ||= {}
-      meal_attr = HashWithIndifferentAccess.new(meal_attr)
-
-      meal_attr.merge!(:starting_at => Time.parse(meal_attr[:starting_at])) if meal_attr[:starting_at].is_a?(String)
-      meal_attr.merge!(:ending_at => Time.parse(meal_attr[:ending_at])) if meal_attr[:ending_at].is_a?(String)
-
-      meal_attr[:served_on] ||= meal_attr[:starting_at].to_date if meal_attr[:starting_at]
-      meal_attr[:served_on] ||= meal_attr[:ending_at].to_date if meal_attr[:ending_at]
-
-      self.attributes = meal_attr.slice *@@attributes
-    end
-
-    def new_record?
-      self.id.blank?
-    end
-
-    def update_attributes(attr={})
-      attr.keys.each do |attr_id|
-        self.send("#{attr_id}=", attr[attr_id])
-      end
-      save
+      super
+      cast_to_date :served_on
+      cast_to_time :starting_at, :ending_at
     end
 
     def save
@@ -73,31 +32,9 @@ module ResidentialService
       ResidentialService::MealPersistence.destroy self
     end
 
-    def to_param
-      send(:id).to_s
-    end
-
-    def to_key
-      send(:id) ? [send(:id)] : nil
-    end
-
     def reload
       instance = self.class.find(self.meal_type_id, self.id)
       self.attributes = instance.attributes
-    end
-
-    def attributes
-      @@attributes.inject(HashWithIndifferentAccess.new) do |attrs, key|
-        attrs.merge key => read_attribute_for_validation(key)
-      end
-    end
-
-    def attributes=(attrs)
-      attrs.each_pair{|k,v| send "#{k}=", v}
-    end
-
-    def read_attribute_for_validation(key)
-      send key
     end
 
     def meal_type=(meal_type)
@@ -109,30 +46,5 @@ module ResidentialService
     def meal_type
       @meal_type ||= ResidentialService::MealType.find(self.account_id, self.meal_type_id)
     end
-
-    def service_errors
-      @service_errors ||= {}
-    end
-    
-    private
-      def service_errors=(errors)
-        @service_errors = errors
-      end
-
-      def cast_to_time(*attr_ids)
-        attr_ids.each do |attr_id|
-          if self.attributes[attr_id].is_a?(String)
-            send "#{attr_id}=", self.attributes[attr_id].to_time.in_time_zone
-          end
-        end
-      end
-
-      def cast_to_date(*attr_ids)
-        attr_ids.each do |attr_id|
-          if self.attributes[attr_id].is_a?(String)
-            send "#{attr_id}=", self.attributes[attr_id].to_date
-          end
-        end
-      end
   end
 end
