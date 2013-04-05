@@ -15,11 +15,11 @@ module ResidentialService
     attr_accessor *@@attributes
 
     def begins_at=(val)
-      @begins_at = val.is_a?(Time) ? val : val.to_time.in_time_zone
+      @begins_at = val.nil? || val.is_a?(Time) ? val : val.to_time.in_time_zone
     end
 
     def ends_at=(val)
-      @ends_at = val.is_a?(Time) ? val : val.to_time.in_time_zone
+      @ends_at = val.nil? || val.is_a?(Time) ? val : val.to_time.in_time_zone
     end
 
     class << self

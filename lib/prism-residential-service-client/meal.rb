@@ -15,15 +15,15 @@ module ResidentialService
     attr_accessor *@@attributes
 
     def starting_at=(val)
-      @starting_at = val.is_a?(Time) ? val : val.to_time.in_time_zone
+      @starting_at = val.nil? || val.is_a?(Time) ? val : val.to_time.in_time_zone
     end
 
     def ending_at=(val)
-      @ending_at = val.is_a?(Time) ? val : val.to_time.in_time_zone
+      @ending_at = val.nil? || val.is_a?(Time) ? val : val.to_time.in_time_zone
     end
 
     def served_on=(val)
-      @served_on = val.is_a?(Date) ? val : val.to_date
+      @served_on = val.nil? || val.is_a?(Date) ? val : val.to_date
     end
 
     class << self
@@ -117,6 +117,22 @@ module ResidentialService
     private
       def service_errors=(errors)
         @service_errors = errors
-      end      
+      end
+
+      def cast_to_time(*attr_ids)
+        attr_ids.each do |attr_id|
+          if self.attributes[attr_id].is_a?(String)
+            send "#{attr_id}=", self.attributes[attr_id].to_time.in_time_zone
+          end
+        end
+      end
+
+      def cast_to_date(*attr_ids)
+        attr_ids.each do |attr_id|
+          if self.attributes[attr_id].is_a?(String)
+            send "#{attr_id}=", self.attributes[attr_id].to_date
+          end
+        end
+      end
   end
 end
