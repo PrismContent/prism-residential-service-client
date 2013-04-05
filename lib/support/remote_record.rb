@@ -35,10 +35,18 @@ module Prism
       self.id.blank?
     end
 
-    def update_attributes(attr={})
-      attr.keys.each do |attr_id|
-        self.send("#{attr_id}=", attr[attr_id])
+    def update_attributes(attrs={})
+      multi_parameter_attributes  = []
+
+      attrs.each_pair do |k,v| 
+        if k.to_s.include?("(")
+          multi_parameter_attributes << [ k, v ]
+        else
+          send "#{k}=", v if self.class.attribute_names.keys.include?(k.to_sym)
+        end
       end
+
+      assign_multiparameter_attributes(multi_parameter_attributes) unless multi_parameter_attributes.empty?
       save
     end
 
