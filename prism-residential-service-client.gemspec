@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "prism-residential-service-client"
-  s.version = "0.1.6.0"
+  s.version = "0.2.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andy Vanasse"]
@@ -49,6 +49,7 @@ Gem::Specification.new do |s|
     "lib/prism-residential-service-client/staff_position_persistence.rb",
     "lib/prism-residential-service-client/transportation_schedule.rb",
     "lib/prism-residential-service-client/transportation_schedule_persistence.rb",
+    "lib/support/remote_record.rb",
     "lib/support/serializers.rb",
     "lib/support/validation.rb",
     "prism-residential-service-client.gemspec",
