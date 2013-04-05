@@ -14,7 +14,7 @@ end
 
 hydra = Typhoeus::Hydra.new
 
-config_file_path = File.join( File.dirname(__FILE__), '..', 'config', 'service.yml' )
+config_file_path = File.join( File.dirname(__FILE__), '..', 'config', 'service.yml.example' )
 config_options = YAML.load_file(config_file_path)['test']
 config = ActiveSupport::HashWithIndifferentAccess.new(config_options.merge hydra: hydra)
 
