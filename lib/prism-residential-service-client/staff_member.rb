@@ -5,7 +5,8 @@ module ResidentialService
     self.attribute_names = {
       :first_name => String, :last_name => String, :hired_on => Date, 
       :terminated_on => Date, :staff_position_id => Integer, :position => Integer, 
-      :account_id => Integer, :id => Integer, :staff_position_name => String}
+      :account_id => Integer, :id => Integer, :staff_position_name => String
+    }
 
     validates_presence_of :first_name, :last_name, :staff_position_id, :account_id
 

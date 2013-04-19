@@ -7,12 +7,12 @@ source "http://rubygems.org"
 # Include everything needed to run rake, tests, features, etc.
 gem 'typhoeus', '~>0.6.2'
 gem 'activesupport', '>2.3.5'
-gem 'json', '~>1.6.6'
+gem 'json', '~>1.7.0'
 
 group :development, :test do
   gem "rspec", "~> 2.8.0"
   gem "rdoc", "~> 3.12"
-  gem "bundler", "~> 1.2.1"
+  gem "bundler", "~> 1.3.1"
   gem "jeweler", "~> 1.8.3"
   gem "simplecov", ">= 0"
 end
