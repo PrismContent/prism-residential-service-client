@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "prism-residential-service-client"
-  s.version = "0.3.0.0"
+  s.version = "0.3.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andy Vanasse"]
-  s.date = "2013-04-19"
+  s.date = "2013-05-14"
   s.description = "An ActiveRecord-like interface for accessing the Resident Services API."
   s.email = "andyvanasse@gmail.com"
   s.extra_rdoc_files = [
@@ -19,6 +19,8 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     ".rspec",
+    ".ruby-gemset",
+    ".ruby-version",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
@@ -42,6 +44,10 @@ Gem::Specification.new do |s|
     "lib/prism-residential-service-client/office_hour_persistence.rb",
     "lib/prism-residential-service-client/resident.rb",
     "lib/prism-residential-service-client/resident_persistence.rb",
+    "lib/prism-residential-service-client/service_offering.rb",
+    "lib/prism-residential-service-client/service_offering_persistence.rb",
+    "lib/prism-residential-service-client/service_time.rb",
+    "lib/prism-residential-service-client/service_time_persistence.rb",
     "lib/prism-residential-service-client/staff_member.rb",
     "lib/prism-residential-service-client/staff_member_persistence.rb",
     "lib/prism-residential-service-client/staff_position.rb",
@@ -58,6 +64,8 @@ Gem::Specification.new do |s|
     "spec/meal_type_spec.rb",
     "spec/office_hour_spec.rb",
     "spec/resident_spec.rb",
+    "spec/service_offering_spec.rb",
+    "spec/service_time_spec.rb",
     "spec/spec_helper.rb",
     "spec/staff_member_spec.rb",
     "spec/staff_position_spec.rb",
@@ -81,6 +89,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<bundler>, ["~> 1.3.1"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_development_dependency(%q<faker>, [">= 0"])
     else
       s.add_dependency(%q<typhoeus>, ["~> 0.6.2"])
       s.add_dependency(%q<activesupport>, ["> 2.3.5"])
@@ -90,6 +99,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<bundler>, ["~> 1.3.1"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
       s.add_dependency(%q<simplecov>, [">= 0"])
+      s.add_dependency(%q<faker>, [">= 0"])
     end
   else
     s.add_dependency(%q<typhoeus>, ["~> 0.6.2"])
@@ -100,6 +110,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<bundler>, ["~> 1.3.1"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
     s.add_dependency(%q<simplecov>, [">= 0"])
+    s.add_dependency(%q<faker>, [">= 0"])
   end
 end
 
