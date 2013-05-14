@@ -15,4 +15,5 @@ group :development, :test do
   gem "bundler", "~> 1.3.1"
   gem "jeweler", "~> 1.8.3"
   gem "simplecov", ">= 0"
+  gem 'faker'
 end
