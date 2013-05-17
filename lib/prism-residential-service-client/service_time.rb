@@ -15,6 +15,16 @@ module ResidentialService
       end
     end
 
+    def initialize(time_attr={})
+      super time_attr
+      cast_to_time :starting_at, :ending_at
+    end
+
+    def time_range
+      return self.starting_at.strftime('%l:%M%p') if self.ending_at.blank?
+      "#{self.starting_at.strftime('%-l:%M%p')}-#{self.ending_at.strftime('%-l:%M%p')}" 
+    end
+
     def save
       ResidentialService::ServiceTimePersistence.save(self) if valid?
     end
