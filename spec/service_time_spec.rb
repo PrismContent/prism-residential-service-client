@@ -2,7 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require 'faker'
 
 describe ResidentialService::ServiceTime do
-  let(:valid_attributes){ { service_offering_id: service_offering_id, wday: wday, starting_at: starting_at, ending_at: 1.hour.since(starting_at) } }
+  let(:valid_attributes){ { service_offering_id: service_offering_id, wday: wday, starting_at: starting_at, ending_at: 1.hour.since(starting_at), time_of_day: time_of_day } }
+  let(:time_of_day){ 'Specific Time' }
   let(:service_offering_id){ 1 }
   let(:wday){ Time.now.wday }
   let(:starting_at){ Time.now }

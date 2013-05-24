@@ -4,10 +4,10 @@ module ResidentialService
 
     self.attribute_names = {
       :id => Integer, :service_offering_id => Integer, 
-      :wday => Integer, :starting_at => Time, :ending_at => Time
+      :wday => Integer, :time_of_day => String, :starting_at => Time, :ending_at => Time
     }
 
-    validates_presence_of :wday, :starting_at
+    validates_presence_of :wday, :time_of_day
 
     class << self
       def find(service_offering_id, service_time_id = nil)
@@ -21,8 +21,14 @@ module ResidentialService
     end
 
     def time_range
+      return self.time_of_day unless user_specified_time?
+
       return self.starting_at.strftime('%l:%M%p') if self.ending_at.blank?
       "#{self.starting_at.strftime('%-l:%M%p')}-#{self.ending_at.strftime('%-l:%M%p')}" 
+    end
+
+    def user_specified_time?
+      self.time_of_day == 'Specific Time'
     end
 
     def save
