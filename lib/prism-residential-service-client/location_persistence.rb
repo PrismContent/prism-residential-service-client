@@ -27,32 +27,46 @@ module ResidentialService
         end
       end
 
+      def proof(location)
+        return false if location.new_record?
+        @location = location
+
+        new_attributes = location.attributes.except(:state, :id)
+        response = Typhoeus::Request.put proof_url(location), :body => new_attributes.to_json
+        handle_persistence_response response        
+      end
+
       def save(location)
+        @location = location
         target_url = persistence_url(location)
+        new_attributes = location.attributes.except :state, :id, :created_at, :updated_at
 
-        case persistence_method(location)
-          when :post
-            response = Typhoeus::Request.post target_url, :body => location.attributes.to_json
-          when :put
-            response = Typhoeus::Request.put target_url,  :body => location.attributes.to_json
-        end
-        
-        if response.timed_out?
-          location.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
-          return false
-        end
+        response = Typhoeus::Request.send persistence_method(location), target_url, :body => new_attributes.to_json
+        handle_persistence_response response 
+      end
 
-        case response.code
-          when 200
-            return true
-          when 201
-            location.id= instance_from(response).id
-            return true
-          when 0 
-            location.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
+      def handle_persistence_response(response)
+        case 
+          when response.timed_out?
+            @location.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
             return false
+
+          when response.code == 200
+            @location.state = instance_from(response).state
+            return true
+
+          when response.code == 201
+            instance = instance_from(response)
+            @location.id = instance.id
+            @location.state = instance.state
+            return true
+
+          when response.code == 0 
+            @location.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
+            return false
+
           else
-            location.send("service_errors=".to_sym, error_from(response))
+            @location.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end
@@ -60,6 +74,12 @@ module ResidentialService
       def destroy(location)
         response = Typhoeus::Request.delete instance_url(location)
         response.code == 200
+      end
+
+      def proof_url(location)
+        return nil if location.new_record?
+
+        "#{instance_url(location)}/proof"
       end
 
       def persistence_method( location )

@@ -148,7 +148,53 @@ describe ResidentialService::Resident do
       it "should not assign a new id to the instance" do
         lambda{ @resident.save }.should_not change(@resident, :id)
       end
+
+      context "after proof" do
+        before :each do
+          @resident.proof first_name: 'John'
+          @resident.should be_proofed
+        end
+
+        it "should change the state to 'edited'" do
+          lambda{ 
+            @resident.first_name = 'Abbie'
+            @resident.save
+          }.should change(@resident, :state).to('edited')
+        end
+      end
     end
+  end
+
+  describe "#proof" do
+    context "with a new record" do
+      before :each do
+        clear_residents
+        @resident = ResidentialService::Resident.new @valid_attributes
+        @resident.should be_new_record
+      end
+
+      subject{ @resident.proof first_name: 'Bob' }
+    
+      it{ should eql false }
+    end
+
+    context "with an existing record" do
+      before :each do
+        clear_residents
+        @resident = ResidentialService::Resident.create @valid_attributes
+        @resident.should_not be_new_record
+
+        @resident.first_name = @resident.first_name.reverse
+      end
+
+      subject{ @resident.proof first_name: 'Bob' }
+    
+      it{ should eql true }
+
+      it "should not assign a new id to the instance" do
+        lambda{ @resident.proof first_name: 'Joseph' }.should change(@resident, :state).to('proofed')
+      end
+    end  
   end
 
   describe '#new_record?' do

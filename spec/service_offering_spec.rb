@@ -115,6 +115,41 @@ describe ResidentialService::ServiceOffering do
       it "should not change the id of the instance" do
         lambda{ service_offering.save }.should_not change(service_offering, :id)
       end
+
+      context "after proof" do
+        before(:each) do 
+          service_offering.proof name: 'Zoo Trip'
+          service_offering.name = 'Movies'
+        end
+
+        it "should change the state to 'edited'" do
+          lambda{ service_offering.save }.should change(service_offering, :state).to('edited')
+        end
+      end
+    end
+  end
+
+  describe "#proof" do
+    subject{ service_offering.proof name: 'Doctor Visits' }
+
+    before :each do
+      ResidentialService::ServiceOffering.delete_all account_id if account_id
+    end
+
+    context "with a new record" do
+      let(:service_offering){ResidentialService::ServiceOffering.new valid_attributes}
+
+      it{ should eql false }
+    end
+
+    context "with an existing record" do
+      let(:service_offering){ResidentialService::ServiceOffering.create valid_attributes}
+      
+      it{ should be true }
+
+      it "should change the state to 'proofed'" do
+        lambda{ service_offering.proof name: 'Doctor Visits' }.should change(service_offering, :state).to('proofed')
+      end
     end
   end
 

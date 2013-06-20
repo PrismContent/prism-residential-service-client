@@ -3,7 +3,7 @@ module ResidentialService
     require File.expand_path(File.dirname(__FILE__), 'service_offering_persistence')
 
     self.attribute_names = {
-      :name => String, :description => String, :service_type => String,
+      :name => String, :description => String, :service_type => String, :state => String,
       :account_id => Integer, :id => Integer
     }
 
@@ -17,6 +17,15 @@ module ResidentialService
       def find(account_id, service_offering_id = nil)
         ResidentialService::ServiceOfferingPersistence.find_for_account account_id, service_offering_id
       end
+    end
+
+    def proofed?
+      self.state == 'proofed'
+    end
+
+    def proof(attrs)
+      self.attributes = attrs
+      ResidentialService::ServiceOfferingPersistence.proof(self) if valid?
     end
 
     def save

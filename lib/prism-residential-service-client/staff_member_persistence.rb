@@ -27,34 +27,49 @@ module ResidentialService
         end
       end
 
+      def proof(staff_member)
+        return false if staff_member.new_record?
+        @staff_member = staff_member
+
+        new_attributes = staff_member.attributes.except(:state, :id)
+
+        response = Typhoeus::Request.put proof_url(staff_member), :body => new_attributes.to_json
+        handle_persistence_response response
+      end
+
       def save(staff_member)
+        @staff_member = staff_member
         target_url = persistence_url(staff_member)
+        new_attributes = staff_member.attributes.except(:state, :id)
 
-        case persistence_method(staff_member)
-          when :post
-            response = Typhoeus::Request.post target_url, :body => staff_member.attributes.to_json
-          when :put
-            response = Typhoeus::Request.put target_url,  :body => staff_member.attributes.to_json
-        end
-        
-        if response.timed_out?
-          staff_member.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
-          return false
-        end
+        response = Typhoeus::Request.send persistence_method(staff_member), target_url, :body => new_attributes.to_json
+        handle_persistence_response response
+      end
 
-        case response.code
-          when 200
-            return true
-          when 201
+      def handle_persistence_response(response)
+        case 
+          when response.timed_out?
+            @staff_member.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
+            return false
+
+          when response.code == 200
             instance = instance_from(response)
-            staff_member.id = instance.id
-            staff_member.position = instance.position
+            @staff_member.state = instance.state
             return true
-          when 0 
-            staff_member.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
+
+          when response.code == 201
+            instance = instance_from(response)
+            @staff_member.id = instance.id
+            @staff_member.position = instance.position
+            @staff_member.state = instance.state
+            return true
+
+          when response.code == 0 
+            @staff_member.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
             return false  
+
           else
-            staff_member.send("service_errors=".to_sym, error_from(response))
+            @staff_member.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end
@@ -80,6 +95,12 @@ module ResidentialService
         end
 
         response.code == 200
+      end
+
+      def proof_url(staff_member)
+        return nil if staff_member.new_record?
+
+        "#{instance_url(staff_member)}/proof"
       end
 
       def persistence_method( staff_member )

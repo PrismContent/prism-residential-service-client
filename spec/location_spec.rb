@@ -130,12 +130,55 @@ describe ResidentialService::Location do
         @location.name = @location.name.reverse
       end
 
-      subject{ @location.save }
-    
-      it{ should eql true }
+      it{ @location.save.should eql true }
 
       it "should not assign a new id to the instance" do
         lambda{ @location.save }.should_not change(@location, :id)
+      end
+
+      context "and after proof" do
+        before :each do
+          @location.proof name: 'Bob'
+          @location.should be_proofed
+        end
+
+        it "should not assign a new id to the instance" do
+          lambda{ 
+            @location.name = 'Eliana'
+            @location.save 
+          }.should change(@location, :state).from('proofed').to('edited')
+        end
+      end
+    end
+  end
+
+  describe "#proof" do
+    context "with a new record" do
+      before :each do
+        clear_locations
+        @location = ResidentialService::Location.new @valid_attributes
+        @location.should be_new_record
+      end
+
+      subject{ @location.proof name: @location.name }
+    
+      it{ should eql false }
+    end
+
+    context "with an existing record" do
+      before :each do
+        clear_locations
+        @location = ResidentialService::Location.create @valid_attributes
+        @location.should_not be_new_record
+      end
+
+      it{ 
+        @location.proof(name: @location.name.reverse).should eql true
+      }
+
+      it "should not assign a new id to the instance" do
+        @location.proof name: 'Warthog'
+        @location.state.should eql 'proofed'
       end
     end
   end

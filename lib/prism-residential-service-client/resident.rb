@@ -5,8 +5,8 @@ module ResidentialService
     self.attribute_names = { 
       :first_name => String, :last_name => String, :spouse_name => String, :spouse_id => Integer, 
       :married_on => Date, :moved_in_on => Date, :moved_out_on => Date, :born_on => Date, 
-      :deceased_on => Date, :room => String, :email => String, :account_id => Integer, 
-      :id => Integer
+      :deceased_on => Date, :room => String, :email => String, :state => String,
+      :account_id => Integer, :id => Integer
     }
 
     validates_presence_of :first_name, :last_name, :account_id
@@ -24,6 +24,15 @@ module ResidentialService
     def initialize(resident_attr={})
       super resident_attr
       cast_to_date :moved_in_on, :moved_out_on, :born_on, :deceased_on, :married_on
+    end
+
+    def proofed?
+      self.state == 'proofed'
+    end
+
+    def proof(attrs)
+      self.attributes = attrs
+      ResidentialService::ResidentPersistence.proof(self) if valid?
     end
 
     def save

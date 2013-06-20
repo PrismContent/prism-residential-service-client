@@ -3,7 +3,7 @@ module ResidentialService
     require File.expand_path(File.dirname(__FILE__), 'location_persistence')
 
     self.attribute_names = {
-      :name => String, :code => String, :account_id => Integer, :id => Integer
+      :name => String, :code => String, :state => String, :account_id => Integer, :id => Integer
     }
 
     validates_presence_of :name, :account_id
@@ -16,6 +16,15 @@ module ResidentialService
 
     def save
       ResidentialService::LocationPersistence.save(self) if valid?
+    end
+
+    def proofed?
+      self.state == 'proofed'
+    end
+
+    def proof(attrs={})
+      self.attributes = attrs
+      ResidentialService::LocationPersistence.proof(self) if valid?
     end
 
     def destroy

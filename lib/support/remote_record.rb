@@ -36,17 +36,7 @@ module Prism
     end
 
     def update_attributes(attrs={})
-      multi_parameter_attributes  = []
-
-      attrs.each_pair do |k,v| 
-        if k.to_s.include?("(")
-          multi_parameter_attributes << [ k, v ]
-        else
-          send "#{k}=", v if self.class.attribute_names.keys.include?(k.to_sym)
-        end
-      end
-
-      assign_multiparameter_attributes(multi_parameter_attributes) unless multi_parameter_attributes.empty?
+      attributes = attrs
       save
     end
 

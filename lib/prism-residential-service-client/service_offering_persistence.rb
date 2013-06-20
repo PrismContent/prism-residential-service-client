@@ -27,32 +27,48 @@ module ResidentialService
         end
       end
 
+      def proof(service_offering)
+        return false if service_offering.new_record?
+        @service_offering = service_offering
+
+        target_url = proof_url(service_offering)
+        new_attributes = service_offering.attributes.except :id, :state, :created_at, :updated_at
+
+        response = Typhoeus::Request.put target_url, :body => new_attributes.to_json
+        handle_persistence_response response
+      end
+
       def save(service_offering)
+        @service_offering = service_offering
         target_url = persistence_url(service_offering)
+        new_attributes = service_offering.attributes.except :id, :state, :created_at, :updated_at
 
-        case persistence_method(service_offering)
-          when :post
-            response = Typhoeus::Request.post target_url, :body => service_offering.attributes.to_json
-          when :put
-            response = Typhoeus::Request.put target_url,  :body => service_offering.attributes.to_json
-        end
-        
-        if response.timed_out?
-          service_offering.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
-          return false
-        end
+        response = Typhoeus::Request.send persistence_method(service_offering), target_url, :body => new_attributes.to_json
+        handle_persistence_response response
+      end
 
-        case response.code
-          when 200
-            return true
-          when 201
-            service_offering.id= instance_from(response).id
-            return true
-          when 0 
-            service_offering.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
+      def handle_persistence_response(response)
+        case 
+          when response.timed_out?
+            @service_offering.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
             return false
+
+          when response.code == 200
+            @service_offering.state = instance_from(response).state
+            return true
+
+          when response.code == 201
+            instance = instance_from(response)
+            @service_offering.id = instance.id
+            @service_offering.state =  instance.state
+            return true
+
+          when response.code == 0 
+            @service_offering.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
+            return false
+
           else
-            service_offering.send("service_errors=".to_sym, error_from(response))
+            @service_offering.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end
@@ -64,6 +80,11 @@ module ResidentialService
 
       def persistence_method( service_offering )
         service_offering.new_record? ? :post : :put
+      end
+
+      def proof_url(service_offering)
+        return nil if service_offering.new_record?
+        "#{persistence_url(service_offering)}/proof"
       end
 
       def persistence_url(service_offering)

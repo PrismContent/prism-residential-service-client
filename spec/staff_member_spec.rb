@@ -149,12 +149,55 @@ describe ResidentialService::StaffMember do
         @staff_member.first_name = @staff_member.first_name.reverse
       end
 
-      subject{ @staff_member.save }
-    
-      it{ should eql true }
+      it{ @staff_member.save.should eql true }
 
       it "should not assign a new id to the instance" do
         lambda{ @staff_member.save }.should_not change(@staff_member, :id)
+      end
+
+      context "and after proof" do
+        before :each do
+          @staff_member.proof first_name: 'Bob'
+          @staff_member.should be_proofed
+        end
+
+        it "should not assign a new id to the instance" do
+          lambda{ 
+            @staff_member.first_name = 'Eliana'
+            @staff_member.save 
+          }.should change(@staff_member, :state).from('proofed').to('edited')
+        end
+      end
+    end
+  end
+
+  describe "#proof" do
+    context "with a new record" do
+      before :each do
+        clear_staff_members
+        @staff_member = ResidentialService::StaffMember.new @valid_attributes
+        @staff_member.should be_new_record
+      end
+
+      subject{ @staff_member.proof first_name: @staff_member.first_name }
+    
+      it{ should eql false }
+    end
+
+    context "with an existing record" do
+      before :each do
+        clear_staff_members
+        @staff_member = ResidentialService::StaffMember.create @valid_attributes
+        @staff_member.should_not be_new_record
+      end
+
+      it{ 
+        @staff_member.proof(first_name: @staff_member.first_name.reverse).should eql true
+      }
+
+      it "should not assign a new id to the instance" do
+        @staff_member.proof first_name: 'Warthog'
+        @staff_member.state.should eql 'proofed'
       end
     end
   end
@@ -282,7 +325,7 @@ describe ResidentialService::StaffMember do
         end
 
         it "should increment the position by one" do
-          expected_position = ResidentialService::StaffMember.find(@staff_position.account_id).size
+          expected_position = ResidentialService::StaffMember.find(@staff_position.account_id).last.position
           lambda{ @staff_position.move :bottom }.should change(@staff_position, :position).to(expected_position)
         end
       end

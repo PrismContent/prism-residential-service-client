@@ -37,32 +37,47 @@ module ResidentialService
         end
       end
 
+      def proof(resident)
+        return false if resident.new_record?
+
+        @resident = resident
+        new_attributes = resident.attributes.except :id, :state, :created_at, :updated_at
+
+        response = Typhoeus::Request.put proof_url(resident), :body => new_attributes.to_json
+        handle_persistence_response(response) 
+      end
+
       def save(resident)
+        @resident = resident
         target_url = persistence_url(resident)
+        new_attributes = resident.attributes.except :id, :state, :created_at, :updated_at
 
-        case persistence_method(resident)
-          when :post
-            response = Typhoeus::Request.post target_url, :body => resident.attributes.to_json
-          when :put
-            response = Typhoeus::Request.put target_url,  :body => resident.attributes.to_json
-        end
-        
-        if response.timed_out?
-          resident.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
-          return false
-        end
+        response = Typhoeus::Request.send persistence_method(resident), target_url, :body => new_attributes.to_json
+        handle_persistence_response(response) 
+      end
 
-        case response.code
-          when 200
+      def handle_persistence_response(response)
+        case 
+          when response.timed_out?
+            @resident.send("service_errors=".to_sym, "Connection timeout. Please try again soon.")
+            return false
+
+          when response.code == 200
+            @resident.state = instance_from(response).state
             return true
-          when 201
-            resident.id= instance_from(response).id
+
+          when response.code == 201
+            instance = instance_from(response)
+            @resident.id = instance.id
+            @resident.state = instance.state
             return true
-          when 0 
-            resident.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
+
+          when response.code == 0 
+            @resident.send("service_errors=".to_sym, "Unable to connect to service. Please try again soon.")
             return false  
+
           else
-            resident.send("service_errors=".to_sym, error_from(response))
+            @resident.send("service_errors=".to_sym, error_from(response))
             return false
         end
       end
@@ -70,6 +85,10 @@ module ResidentialService
       def destroy(resident)
         response = Typhoeus::Request.delete instance_url(resident)
         response.code == 200
+      end
+
+      def proof_url( resident )
+        "#{persistence_url(resident)}/proof"
       end
 
       def persistence_method( resident )
