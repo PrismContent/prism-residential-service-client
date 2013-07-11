@@ -40,6 +40,8 @@ module Prism
       save
     end
 
+    alias :update :update_attributes
+    
     def to_param
       send(:id).to_s
     end
