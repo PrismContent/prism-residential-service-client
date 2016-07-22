@@ -1,5 +1,6 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
+require 'yaml'
 require 'rspec'
 require 'prism-residential-service-client'
 require 'active_support/hash_with_indifferent_access'
